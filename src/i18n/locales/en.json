@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your Cart is Empty",
+    "continue_shopping": "Continue Shopping",
+    "summary": "Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shipping_free": "Free",
+    "tax": "Tax",
+    "total": "Total",
+    "your_info": "Your Information",
+    "name": "Full Name",
+    "phone": "Phone",
+    "wilaya": "Wilaya",
+    "address": "Address",
+    "payment_notice": "Payment will be made in cash upon delivery. Our delivery person will contact you before delivery.",
+    "place_order": "Place Order (Cash on Delivery)",
+    "order_success": "Order Confirmed!",
+    "success_message": "Thank you for your order. Our team will contact you soon to confirm delivery."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "cart": {
+    "title": "Votre Panier",
+    "empty": "Votre Panier est Vide",
+    "continue_shopping": "Continuer vos achats",
+    "summary": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "shipping_free": "Gratuite",
+    "tax": "Taxe",
+    "total": "Total",
+    "your_info": "Vos coordonnées",
+    "name": "Nom complet",
+    "phone": "Téléphone",
+    "wilaya": "Wilaya",
+    "address": "Adresse",
+    "payment_notice": "Le paiement se fera en espèces à la livraison. Notre livreur vous contactera avant la livraison.",
+    "place_order": "Commander (Paiement à la livraison)",
+    "order_success": "Commande Confirmée!",
+    "success_message": "Merci pour votre commande. Notre équipe vous contactera bientôt pour confirmer la livraison."
+  }
+}

@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  body {
+    @apply bg-dark-300 text-gray-100 font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500;
+  }
+  .btn-secondary {
+    @apply btn bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-500;
+  }
+  .btn-accent {
+    @apply btn bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500;
+  }
+  .btn-outline {
+    @apply btn border border-gray-600 bg-transparent hover:bg-gray-800 focus:ring-gray-500;
+  }
+  .container-custom {
+    @apply px-4 md:px-6 mx-auto max-w-7xl;
+  }
+  .nav-link {
+    @apply relative hover:text-primary-400 transition-colors;
+  }
+  .nav-link::after {
+    @apply content-[''] absolute w-0 h-0.5 bg-primary-500 left-0 -bottom-1 transition-all duration-300;
+  }
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+  .neon-text {
+    @apply text-primary-400 animate-glow;
+  }
+  .product-card {
+    @apply bg-dark-200 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-neon;
+  }
+  .badge {
+    @apply px-2 py-1 text-xs rounded-full font-medium;
+  }
+  .badge-new {
+    @apply badge bg-accent-500 text-white;
+  }
+  .badge-sale {
+    @apply badge bg-primary-500 text-white;
+  }
+  .badge-out {
+    @apply badge bg-gray-500 text-white;
+  }
+  .input {
+    @apply w-full rounded-md border border-gray-700 bg-dark-100 px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+  .loading {
+    @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent;
+  }
+}
+
+.clip-path-slant {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Animated hamburger menu */
+.hamburger-line {
+  @apply h-0.5 w-6 bg-white transition duration-300;
+}
+
+.hamburger.active .hamburger-line:nth-child(1) {
+  @apply translate-y-1.5 rotate-45;
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+  @apply opacity-0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+  @apply -translate-y-1.5 -rotate-45;
+}
+
+/* Product image hover zoom effect */
+.image-zoom {
+  @apply transition-transform duration-500 hover:scale-110;
+}
+
+/* Price tag style */
+.price-tag {
+  @apply relative inline-block;
+}
+
+.price-tag::before {
+  @apply content-[''] absolute -left-3 -top-3 w-full h-full blur-xl opacity-50 bg-accent-500 rounded-full;
+}
+
+/* Carousel scroller */
+.carousel-scroller {
+  @apply flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-hide;
+}
+
+.carousel-scroller > * {
+  @apply snap-start flex-shrink-0;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Blog card hover effect */
+.blog-card {
+  @apply relative overflow-hidden rounded-lg;
+}
+
+.blog-card::before {
+  @apply content-[''] absolute inset-0 bg-gradient-to-t from-dark-300 via-transparent to-transparent opacity-0 transition-opacity duration-300;
+}
+
+.blog-card:hover::before {
+  @apply opacity-100;
+}
+
+/* Animated cart button */
+@keyframes cart-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.cart-btn:hover .cart-icon {
+  animation: cart-bounce 0.5s ease;
+}

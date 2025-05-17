@@ -1,159 +1,174 @@
-import React, { useState, useEffect } from 'react';
+// src/components/layout/Header.tsx
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, LayoutGrid } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../../contexts/CartContext';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
-  const { cartItems } = useCart();
-  const { t } = useTranslation();
+interface HeaderProps {
+  /** true ⇢ on a scrollé de quelques pixels (prop que tu passes déjà depuis App) */
+  isScrolled: boolean;
+}
 
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
+  const { t }            = useTranslation();
+  const location         = useLocation();
+  const { cartItems }    = useCart();
 
+  const [menuOpen,   setMenuOpen]   = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  /* ----- compte articles panier ----------------------------------------- */
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  /* ----- lock scroll quand un overlay est ouvert ------------------------ */
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
+    const lock = menuOpen || searchOpen;
+    document.documentElement.classList.toggle('overflow-hidden', lock);
+  }, [menuOpen, searchOpen]);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location]);
-
+  /* ----- helpers -------------------------------------------------------- */
+  const isActive = (path: string) => location.pathname === path;
   const navLinks = [
-    { path: '/', label: t('nav.home') },
-    { path: '/products', label: t('nav.products') },
-    { path: '/blog', label: t('nav.blog') },
-    { path: '/contact', label: t('nav.contact') }
+    { path: '/',          label: t('nav.home') },
+    { path: '/products',  label: t('nav.products') },
+    { path: '/blog',      label: t('nav.blog') },
+    { path: '/contact',   label: t('nav.contact') },
   ];
 
+  /* ---------------------------------------------------------------------- */
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        isScrolled ? 'bg-dark-200/95 backdrop-blur-sm shadow-md' : 'bg-transparent'
-      }`}
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-300
+                 ${isScrolled ? 'bg-dark-200/90 backdrop-blur shadow'
+                               : 'bg-transparent'}`}
     >
-      <div className="container-custom py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="font-heading text-xl md:text-2xl font-bold"
+      {/* Barre principale -------------------------------------------------- */}
+      <div className="container-custom flex h-14 items-center justify-between">
+
+        {/* Logo */}
+        <Link to="/" className="font-heading text-xl font-bold">
+          <span className="text-primary-400">GAMERS</span>{' '}
+          <span className="text-accent-500">VAULT</span>
+        </Link>
+
+        {/* Nav desktop (lg+) */}
+        <nav className="hidden lg:flex items-center gap-8 text-sm font-medium">
+          {navLinks.map(({ path, label }) => (
+            <Link
+              key={path}
+              to={path}
+              aria-current={isActive(path) ? 'page' : undefined}
+              className={`hover:text-primary-400 transition-colors
+                          ${isActive(path) ? 'text-primary-400' : 'text-gray-300'}`}
             >
-              <span className="text-primary-400">GAMERS</span> <span className="text-accent-500">VAULT</span>
-            </motion.div>
+              {label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Actions communes */}
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher/>
+
+          {/* Recherche */}
+          <button
+            onClick={() => setSearchOpen(o => !o)}
+            aria-label={t('nav.search')}
+            className="text-gray-300 hover:text-primary-400 transition-colors"
+          >
+            <Search size={22} />
+          </button>
+
+          {/* Panier */}
+          <Link
+            to="/cart"
+            aria-label={t('nav.cart')}
+            className="relative text-gray-300 hover:text-primary-400"
+          >
+            <ShoppingCart size={22} />
+            {totalItems > 0 && (
+              <span
+                aria-live="polite"
+                className="absolute -top-2 -right-2 flex h-5 w-5
+                           items-center justify-center rounded-full bg-accent-500
+                           text-[10px] text-white"
+              >
+                {totalItems}
+              </span>
+            )}
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`nav-link text-sm font-medium ${
-                  location.pathname === link.path ? 'text-primary-400' : 'text-gray-300'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Desktop Right Menu */}
-          <div className="hidden md:flex items-center space-x-6">
-            <LanguageSwitcher />
-            <button aria-label="Search" className="text-gray-300 hover:text-primary-400 transition-colors">
-              <Search size={20} />
-            </button>
-            <button aria-label="Account" className="text-gray-300 hover:text-primary-400 transition-colors">
-              <User size={20} />
-            </button>
-            <Link 
-              to="/cart" 
-              className="cart-btn relative text-gray-300 hover:text-primary-400 transition-colors"
-              aria-label="Cart"
-            >
-              <ShoppingCart size={20} className="cart-icon" />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 bg-accent-500 text-white text-xs rounded-full">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-          </div>
-
-          {/* Mobile Toggle */}
-          <div className="flex items-center md:hidden space-x-4">
-            <LanguageSwitcher />
-            <Link 
-              to="/cart" 
-              className="relative text-gray-300 hover:text-primary-400 transition-colors"
-              aria-label="Cart"
-            >
-              <ShoppingCart size={20} />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 bg-accent-500 text-white text-xs rounded-full">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-            <button
-              aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`hamburger ${isMenuOpen ? 'active' : ''} text-white p-2 z-50`}
-            >
-              <div className="flex flex-col gap-1.5">
-                <div className="hamburger-line"></div>
-                <div className="hamburger-line"></div>
-                <div className="hamburger-line"></div>
-              </div>
-            </button>
-          </div>
+          {/* Burger (mobile) */}
+          <button
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label={menuOpen ? t('nav.close') : t('nav.open')}
+            aria-expanded={menuOpen}
+            className="lg:hidden text-gray-300 hover:text-primary-400 transition-colors"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ----------------- Mobile menu déroulant plein-écran ----------------- */}
       <AnimatePresence>
-        {isMenuOpen && (
+        {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
+            key="mobileMenu"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 top-0 bg-dark-200/98 z-40 md:hidden"
+            className="lg:hidden bg-dark-200/95 backdrop-blur-sm"
           >
-            <div className="flex flex-col h-full px-6 py-24">
-              <div className="flex flex-col space-y-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`text-xl font-heading ${
-                      location.pathname === link.path ? 'text-primary-400' : 'text-gray-200'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-              
-              <div className="mt-auto pb-8 flex space-x-6">
-                <button aria-label="Search" className="text-gray-300 p-2">
-                  <Search size={24} />
-                </button>
-                <button aria-label="Account" className="text-gray-300 p-2">
-                  <User size={24} />
+            <nav className="container-custom flex flex-col py-6 space-y-4 text-lg font-heading">
+              {navLinks.map(({ path, label }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={isActive(path) ? 'page' : undefined}
+                  className={`py-2 ${isActive(path) ? 'text-primary-400' : 'text-gray-100'}`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ----------------- Overlay recherche plein-écran --------------------- */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            key="searchOverlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-dark-900/90"
+          >
+            <div className="w-full max-w-xl px-6">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder={t('search.placeholder', 'Recherche…')}
+                  autoFocus
+                  className="w-full bg-white py-4 pl-5 pr-12 text-lg
+                             focus:outline-none"
+                />
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  aria-label={t('nav.close')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2
+                             text-gray-400 hover:text-gray-200 transition-colors"
+                >
+                  <X size={24} />
                 </button>
               </div>
             </div>

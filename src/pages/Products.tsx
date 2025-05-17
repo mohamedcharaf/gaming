@@ -55,7 +55,7 @@ const Products: React.FC = () => {
     async function fetchProducts() {
       setLoading(true)
       const { data, error } = await supabase
-        .from<SupabaseProduct>('products')
+        .from('products')
         .select('*')
         .order('created_at', { ascending: false })
       if (error) {

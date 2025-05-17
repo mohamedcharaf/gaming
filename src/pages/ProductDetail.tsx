@@ -327,7 +327,7 @@ const ProductDetail: React.FC = () => {
                       id:       r.id,
                       name:     r.name,
                       price:    r.price,
-                      oldPrice: r.oldPrice,
+                      // oldPrice: r.oldPrice,
                       image:    r.image_url,
                     }}
                     onAddToCart={() => addToCart(r)}

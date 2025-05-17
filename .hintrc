@@ -32,6 +32,14 @@
         "image-alt": "off"
       }
     ],
-    "button-type": "off"
+    "button-type": "off",
+    "compat-api/html": [
+      "default",
+      {
+        "ignore": [
+          "iframe[loading]"
+        ]
+      }
+    ]
   }
 }
